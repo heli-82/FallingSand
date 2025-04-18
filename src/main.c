@@ -3,10 +3,11 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
 
 const int GRID_WIDTH = 96;
 const int GRID_HEIGHT = 64;
-const int SCALE = 5;
+const int SCALE = 6;
 
 void Draw(bool **grid) {
     ClearBackground(BLACK);
@@ -14,6 +15,17 @@ void Draw(bool **grid) {
         for (size_t x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x]) {
                 DrawRectangle(x * SCALE, y * SCALE, SCALE, SCALE, WHITE);
+            }
+        }
+    }
+}
+
+void process_grid(bool **grid) {
+    for (int i = GRID_HEIGHT - 2; i >= 0; i--) {
+        for (int j = 0; j < GRID_WIDTH; j++) {
+            if (!grid[i + 1][j] && grid[i][j]) {
+                grid[i + 1][j] = 1;
+                grid[i][j] = 0;
             }
         }
     }
@@ -29,14 +41,13 @@ int main() {
     }
 
     InitWindow(GRID_WIDTH * SCALE, GRID_HEIGHT * SCALE, "Sand");
-    SetTargetFPS(90);
+    SetTargetFPS(45);
 
     Vector2 mousepos = (Vector2){.x = 0.0, .y = 0.0};
-
     while (!WindowShouldClose()) {
         if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
             mousepos = GetMousePosition();
-            printf("x: %.2f, y:%.2f\n", mousepos.x, mousepos.y);
+            // printf("x: %.2f, y:%.2f\n", mousepos.x, mousepos.y);
             mousepos.y = mousepos.y >= 0.0 ? mousepos.y : 0.0;
             mousepos.y = roundf(mousepos.y / SCALE) < GRID_HEIGHT - 1
                              ? roundf(mousepos.y / SCALE)
@@ -49,6 +60,9 @@ int main() {
 
             grid[(int)mousepos.y][(int)mousepos.x] = 1;
         }
+
+        process_grid(grid) ;
+
         BeginDrawing();
         Draw(grid);
         EndDrawing();
