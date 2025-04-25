@@ -47,7 +47,7 @@ int main() {
     while (!WindowShouldClose()) {
         if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
             mousepos = GetMousePosition();
-            // printf("x: %.2f, y:%.2f\n", mousepos.x, mousepos.y);
+
             mousepos.y = mousepos.y >= 0.0 ? mousepos.y : 0.0;
             mousepos.y = roundf(mousepos.y / SCALE) < GRID_HEIGHT - 1
                              ? roundf(mousepos.y / SCALE)
@@ -56,9 +56,24 @@ int main() {
             mousepos.x = roundf(mousepos.x / SCALE) < GRID_WIDTH - 1
                              ? roundf(mousepos.x / SCALE)
                              : GRID_WIDTH - 1;
-            printf("x: %.2f, y:%.2f\n", mousepos.x, mousepos.y);
+
 
             grid[(int)mousepos.y][(int)mousepos.x] = 1;
+        }
+
+        if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON)) {
+            mousepos = GetMousePosition();
+
+            mousepos.y = mousepos.y >= 0.0 ? mousepos.y : 0.0;
+            mousepos.y = roundf(mousepos.y / SCALE) < GRID_HEIGHT - 1
+                             ? roundf(mousepos.y / SCALE)
+                             : GRID_HEIGHT - 1;
+            mousepos.x = mousepos.x >= 0.0 ? mousepos.x : 0.0;
+            mousepos.x = roundf(mousepos.x / SCALE) < GRID_WIDTH - 1
+                             ? roundf(mousepos.x / SCALE)
+                             : GRID_WIDTH - 1;
+
+            grid[(int)mousepos.y][(int)mousepos.x] = 0;
         }
 
         process_grid(grid) ;
